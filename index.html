@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motomax - Tienda de Motos Online</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Estilos personalizados -->
+    <link rel="css/stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <span class="text-danger">Moto</span>max
+                <small class="d-block text-muted fs-6">Tu tienda de motos online</small>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#productos">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#ofertas">Ofertas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contacto">Contacto</a>
+                    </li>
+                </ul>
+                <div class="ms-3 position-relative">
+                    <button class="btn btn-outline-light position-relative" id="btnCarrito">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="contadorCarrito">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero bg-dark text-white py-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Las mejores motos al mejor precio</h1>
+                    <p class="lead mb-4">Descubre nuestra colección de motos deportivas, urbanas y de aventura</p>
+                    <a href="#productos" class="btn btn-danger btn-lg">Ver catálogo</a>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <img src="img/portal.jpg" alt="Moto deportiva" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Productos -->
+    <section class="py-5" id="productos">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold">Nuestras Motos</h2>
+            
+            <!-- Filtros -->
+            <div class="d-flex justify-content-center mb-5 flex-wrap">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-dark active filtro-btn" data-categoria="todas">Todas</button>
+                    <button type="button" class="btn btn-outline-dark filtro-btn" data-categoria="deportivas">Deportivas</button>
+                    <button type="button" class="btn btn-outline-dark filtro-btn" data-categoria="urbanas">Urbanas</button>
+                    <button type="button" class="btn btn-outline-dark filtro-btn" data-categoria="aventura">Aventura</button>
+                </div>
+            </div>
+            
+            <!-- Grid de productos -->
+            <div class="row g-4" id="gridProductos">
+                <!-- Productos se cargan dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Ofertas -->
+    <section class="py-5 bg-light" id="ofertas">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold">Ofertas Especiales</h2>
+            
+            <div id="carouselOfertas" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <!-- Ofertas se cargan dinámicamente -->
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselOfertas" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselOfertas" data-bs-slide="next">
+                    <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <footer class="py-5 bg-dark text-white" id="contacto">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h3 class="text-danger mb-4">Contacto</h3>
+                    <p><i class="fas fa-map-marker-alt me-2 text-danger"></i> Jr. Huanuco 123, Ciudad de Huanuco</p>
+                    <p><i class="fas fa-phone me-2 text-danger"></i> +51 923 456 789</p>
+                    <p><i class="fas fa-envelope me-2 text-danger"></i> info@motoshop.com</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h3 class="text-danger mb-4">Horario</h3>
+                    <p>Lunes a Viernes: 9:00 - 19:00</p>
+                    <p>Sábados: 10:00 - 14:00</p>
+                    <p>Domingos: Cerrado</p>
+                </div>
+                <div class="col-md-4">
+                    <h3 class="text-danger mb-4">Síguenos</h3>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-white fs-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-white fs-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white fs-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white fs-3"><i class="fab fa-youtube"></i></a>
+                    </div>
+                    <div class="mt-4">
+                        <h4 class="text-danger mb-3">Newsletter</h4>
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Tu email">
+                            <button class="btn btn-danger" type="button">Suscribirse</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Motomax. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Producto -->
+    <div class="modal fade" id="modalProducto" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalProductoTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalProductoBody">
+                    <!-- Contenido dinámico -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-danger" id="btnAgregarModal">Agregar al carrito</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Carrito -->
+    <div class="modal fade" id="modalCarrito" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tu Carrito de Compras</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalCarritoBody">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Precio</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="carritoItems">
+                                <!-- Items del carrito se cargan dinámicamente -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Total:</td>
+                                    <td class="fw-bold" id="carritoTotal">$0</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Seguir comprando</button>
+                    <button type="button" class="btn btn-danger" id="btnVaciarCarrito">Vaciar carrito</button>
+                    <button type="button" class="btn btn-success" id="btnFinalizarCompra">Finalizar compra</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notificación -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-danger text-white">
+                <strong class="me-auto">Motomax</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                Producto agregado al carrito
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script personalizado -->
+    <script src="js/script.js"></script>
+</body>
+</html>
