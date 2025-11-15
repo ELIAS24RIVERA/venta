@@ -36,6 +36,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#contacto">Contacto</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#chatcamModal">Chatcam</a>
+                    </li>
+
                 </ul>
                 <div class="ms-3 position-relative">
                     <button class="btn btn-outline-light position-relative" id="btnCarrito">
@@ -145,6 +149,276 @@
             </div>
         </div>
     </footer>
+<!-- MODAL ChatCam -->
+<div class="modal fade" id="chatcamModal" tabindex="-1" aria-labelledby="chatcamModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content bg-dark text-white">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">ChatCámara</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+
+                <style>
+                    #chatcamModal h2 { text-align: center; }
+
+                    #chat {
+                        width: 100%;
+                        height: 350px;
+                        background: #fff;
+                        color: black;
+                        padding: 10px;
+                        border-radius: 10px;
+                        overflow-y: auto;
+                        box-shadow: 0 0 10px #999;
+                    }
+
+                    .msg-user, .msg-bot {
+                        padding: 10px;
+                        margin: 10px 0;
+                        border-radius: 10px;
+                        max-width: 80%;
+                    }
+                    .msg-user { background:#d4e8ff; margin-left:auto; text-align:right; }
+                    .msg-bot { background:#eee; margin-right:auto; }
+
+                    #controls { text-align: center; margin-top: 20px; }
+
+                    button {
+                        padding: 10px 15px;
+                        border: none;
+                        border-radius: 8px;
+                        background: #0d6efd;
+                        color: white;
+                        cursor: pointer;
+                    }
+
+                    #webcam-container {
+                        margin-top: 20px;
+                        border-radius: 10px;
+                        overflow: hidden;
+                        box-shadow: 0 0 10px #666;
+                    }
+
+                    #label-container {
+                        background: white;
+                        padding: 10px;
+                        border-radius: 10px;
+                        width: 200px;
+                        color: black;
+                        margin-top: 10px;
+                        box-shadow: 0 0 10px #666;
+                    }
+                </style>
+
+                <h2>Chat con Análisis de Imágenes</h2>
+
+                <!-- Chat -->
+                <div id="chat"></div>
+
+                <!-- Botones -->
+                <div id="controls">
+                    <button id="startCam">Iniciar Cámara</button>
+                    <button id="capture">Capturar Foto</button>
+                </div>
+
+                <!-- Cámara -->
+                <div id="webcam-container"></div>
+                <div id="label-container"></div>
+
+                <canvas id="canvas" style="display:none;"></canvas>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
+
+<script>
+
+// ====================================================
+// 🔥 VALIDAR QUE ESTÁS USANDO LIVE SERVER
+// ====================================================
+if (!location.origin.includes("http")) {
+    alert("❌ ERROR: Estás abriendo el archivo sin servidor.\n\n" +
+          "➡ Abre el HTML con: CLICK DERECHO → Open With Live Server.\n\n" +
+          "Mientras aparezca: file:// NADA funcionará.");
+    throw new Error("No Live Server");
+}
+
+// ====================================================
+// 🔥 DETECTOR AUTOMÁTICO DE RUTA DEL MODELO
+// ====================================================
+async function detectarRutaModelo() {
+
+    const rutas = [
+        "./my_model/",
+        "../my_model/",
+        "../../my_model/"
+    ];
+
+    for (let r of rutas) {
+        try {
+            const resp = await fetch(r + "model.json");
+            if (resp.ok) {
+                console.log("Modelo encontrado en:", r);
+                return r;
+            }
+        } catch (e) {}
+    }
+
+    alert("❌ No se encontró la carpeta my_model.\n\n" +
+          "Debe estar así:\n\n" +
+          "PROYECTO/\n" +
+          "   index.html\n" +
+          "   my_model/\n" +
+          "      model.json\n" +
+          "      metadata.json\n" +
+          "      weights.bin\n");
+
+    throw new Error("Carpeta my_model NO encontrada");
+}
+
+
+// ====================================================
+// 🔥 VARIABLES GLOBALES
+// ====================================================
+let model, webcam, labelContainer, maxPredictions, URL;
+
+
+// ====================================================
+// 🔥 INICIALIZAR CÁMARA + MODELO
+// ====================================================
+async function initCamera() {
+
+    try {
+        URL = await detectarRutaModelo();
+
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        webcam = new tmImage.Webcam(200, 200, true);
+        await webcam.setup();
+        await webcam.play();
+
+        document.getElementById("webcam-container").innerHTML = "";
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+
+        labelContainer = document.getElementById("label-container");
+        labelContainer.innerHTML = "";
+
+        for (let i = 0; i < maxPredictions; i++) {
+            labelContainer.appendChild(document.createElement("div"));
+        }
+
+        window.requestAnimationFrame(loop);
+
+    } catch (err) {
+        console.error(err);
+        alert("❌ ERROR cargando modelo/cámara.\n\n" +
+              "Causas:\n" +
+              "✔ No usas Live Server\n" +
+              "✔ my_model está en otro sitio\n" +
+              "✔ No ejecutas con HTTP");
+    }
+}
+
+
+// ====================================================
+// 🔥 LOOP DE DETECCIÓN
+// ====================================================
+async function loop() {
+    if (webcam) {
+        webcam.update();
+        await predict();
+        window.requestAnimationFrame(loop);
+    }
+}
+
+
+// ====================================================
+// 🔥 PREDICCIÓN
+// ====================================================
+async function predict() {
+    const prediction = await model.predict(webcam.canvas);
+
+    for (let i = 0; i < maxPredictions; i++) {
+        labelContainer.childNodes[i].innerHTML =
+            `${prediction[i].className}: ${(prediction[i].probability * 100).toFixed(1)}%`;
+    }
+}
+
+
+// ====================================================
+// 🔥 CHAT
+// ====================================================
+const chat = document.getElementById("chat");
+const canvas = document.getElementById("canvas");
+
+function agregarMensajeUsuario(img) {
+    chat.innerHTML += `
+        <div class="msg-user">
+            <strong>Tú:</strong><br>
+            <img src="${img}" width="150">
+        </div>`;
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function respuestaBot(texto) {
+    chat.innerHTML += `
+        <div class="msg-bot">
+            <strong>Bot:</strong><br> ${texto}
+        </div>`;
+    chat.scrollTop = chat.scrollHeight;
+}
+
+
+// ====================================================
+// 🔥 CAPTURA FOTO
+// ====================================================
+document.getElementById("capture").addEventListener("click", async () => {
+    if (!webcam) return alert("Primero inicia la cámara.");
+
+    canvas.width = webcam.canvas.width;
+    canvas.height = webcam.canvas.height;
+    canvas.getContext("2d").drawImage(webcam.canvas, 0, 0);
+
+    const foto = canvas.toDataURL("image/png");
+    agregarMensajeUsuario(foto);
+
+    const prediction = await model.predict(webcam.canvas);
+    const mejor = prediction.sort((a,b)=>b.probability - a.probability)[0];
+
+    respuestaBot(`La imagen parece ser: <b>${mejor.className}</b> (${(mejor.probability*100).toFixed(1)}%)`);
+});
+
+
+// ====================================================
+// 🔥 EVENTOS MODAL
+// ====================================================
+document.getElementById("chatcamModal").addEventListener("shown.bs.modal", () => {
+    initCamera();
+});
+
+document.getElementById("chatcamModal").addEventListener("hidden.bs.modal", () => {
+    if (webcam) {
+        webcam.stop();
+        webcam = null;
+    }
+});
+
+</script>
+
+
 
     <!-- Modal Producto -->
     <div class="modal fade" id="modalProducto" tabindex="-1" aria-hidden="true">
@@ -219,6 +493,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
