@@ -237,8 +237,11 @@
     </div>
 </div>
 
+<!-- TensorFlow -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
+
+<!-- Teachable Machine (HOSTING GOOGLE OFICIAL) -->
+<script src="https://storage.googleapis.com/teachable-machine-library/image/v1/teachablemachine-image.min.js"></script>
 
 <script>
 
@@ -323,13 +326,11 @@ async function initCamera() {
         window.requestAnimationFrame(loop);
 
     } catch (err) {
-        console.error(err);
+        console.error("ERROR DETALLADO:", err);
         alert("❌ ERROR cargando modelo/cámara.\n\n" +
-              "Causas:\n" +
-              "✔ No usas Live Server\n" +
-              "✔ my_model está en otro sitio\n" +
-              "✔ No ejecutas con HTTP");
+            "DETALLE EN CONSOLA:\n" + err);
     }
+
 }
 
 
@@ -417,6 +418,7 @@ document.getElementById("chatcamModal").addEventListener("hidden.bs.modal", () =
 });
 
 </script>
+
 
 
 
